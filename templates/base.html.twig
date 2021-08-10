@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>{{ title|default("Estrategias") }}</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/assets/styles.css" rel="stylesheet" />
+</head>
+<body {% if isPremium|default(false) == true %}class="premium"{% endif %}>
+{% include "fragments/_nav.html.twig" %}
+{% block content %}{% endblock %}
+{% include "fragments/_footer.html.twig" %}
+<script src="/assets/scripts.js"></script>
+</body>
+</html>

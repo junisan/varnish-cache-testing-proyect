@@ -1,0 +1,52 @@
+version: "3.8"
+
+networks:
+  symfony:
+
+services:
+  symfony:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      args:
+        PHP_INI_FILE: docker/php/php.dev.ini
+        WITH_XDEBUG: "true"
+    working_dir: /app
+    #    command: /bin/sh -c "echo 'Data Container' && while true; do sleep infinity; done"
+    environment:
+      - APP_ENV=dev
+      - APP_DEBUG=true
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./:/app
+    networks:
+      - symfony
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+      args:
+        APP_ENV: dev
+    volumes:
+      - ./public:/app/public
+      - ./docker/nginx/local.conf:/etc/nginx/conf.d/local.conf:ro
+    depends_on:
+      - symfony
+    ports:
+      - "8080:80"
+    networks:
+      - symfony
+
+  varnish:
+    build:
+      context: docker/varnish
+    volumes:
+      - ./docker/varnish/default.vcl:/etc/varnish/default.vcl:ro
+    depends_on:
+      - nginx
+    ports:
+      - "8000:80"
+    networks:
+      - symfony
